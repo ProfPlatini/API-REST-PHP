@@ -1,57 +1,110 @@
-# API REST de Gerenciamento de Produtos
+# PROJETO-CRUD
 
-Esta é uma API RESTful simples desenvolvida em PHP nativo para o gerenciamento (CRUD) de produtos, utilizando o PostgreSQL como banco de dados relacional e a biblioteca PDO (PHP Data Objects) para comunicação segura com a base de dados.
+API REST simples de CRUD de produtos construída com **PHP** e **PostgreSQL**, usando PDO para acesso ao banco de dados.
 
----
+## Funcionalidades
 
-## 📋 Sumário
-- [Descrição Geral](#descrição-geral)
-- [Requisitos](#requisitos)
-- [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
-- [Configuração](#configuração)
-- [Instalação e Execução](#instalação-e-execução)
-- [Endpoints da API](#endpoints-da-api)
-  - [1. Listar Produtos (GET)](#1-listar-produtos-get)
-  - [2. Cadastrar Produto (POST)](#2-cadastrar-produto-post)
-  - [3. Atualizar Produto (PUT)](#3-atualizar-produto-put)
-  - [4. Excluir Produto (DELETE)](#4-excluir-produto-delete)
-- [Exemplos de Uso (cURL)](#exemplos-de-uso-curl)
-- [Tratamento de Erros e Boas Práticas](#tratamento-de-erros-e-boas-práticas)
+- **Cadastrar** produto (POST)
+- **Listar** produtos (GET)
+- **Atualizar** produto (PUT)
+- **Excluir** produto (DELETE)
 
----
+## Pré-requisitos
 
-## ℹ️ Descrição Geral
+- PHP (com extensão `pdo_pgsql` habilitada)
+- PostgreSQL (rodando na porta `5432`)
 
-A API permite realizar operações de criação, leitura, atualização e exclusão de produtos em uma base PostgreSQL. Todas as requisições e respostas utilizam o formato **JSON** e definem o cabeçalho `Content-Type: application/json`.
+## Instalação
 
----
+1. Clone o repositório:
 
-## ⚙️ Requisitos
+```bash
+git clone https://github.com/seu-usuario/PROJETO-CRUD.git
+```
 
-Para rodar esta aplicação, você precisará dos seguintes componentes instalados em seu ambiente:
-
-- **PHP** >= 7.4 (com a extensão `pdo_pgsql` habilitada)
-- **PostgreSQL** >= 12.0
-- **Servidor Web** (Apache, Nginx ou o servidor embutido do PHP)
-- Cliente HTTP (cURL, Postman, Insomnia) para testar os endpoints
-
-> **Nota:** Certifique-se de ativar a extensão PDO para PostgreSQL no seu `php.ini`:
-> ```ini
-> extension=pdo_pgsql
-> ```
-
----
-
-## 🗄️ Estrutura do Banco de Dados
-
-Crie o banco de dados no PostgreSQL e execute o comando SQL abaixo para estruturar a tabela `produtos`:
+2. Crie o banco de dados e a tabela no PostgreSQL:
 
 ```sql
-CREATE DATABASE sistema_produtos;
+CREATE DATABASE lojasegundao;
 
--- Conecte-se ao banco criado e execute:
 CREATE TABLE produtos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    preco NUMERIC(10, 2) NOT NULL
+    preco DECIMAL(10,2) NOT NULL
 );
+```
+
+3. Configure as credenciais do banco em `conexao.php`:
+
+```php
+$host = "IP DO BANCO";
+$usuario = "USUARIO DO DB";
+$senha = "SENHA DO DB";
+$banco = "NOME DO DB";
+```
+
+4. Suba o servidor PHP:
+
+```bash
+php -S localhost:8000
+```
+
+## Estrutura do projeto
+
+```
+PROJETO-CRUD/
+├── conexao.php    # Conexão com o banco (PDO)
+├── produtos.php   # Endpoint da API (rotas CRUD)
+└── README.md
+```
+
+## Endpoints
+
+### Listar produtos — `GET /produtos.php`
+
+Retorna todos os produtos em formato JSON.
+
+### Cadastrar produto — `POST /produtos.php`
+
+```json
+{
+  "nome": "Notebook",
+  "preco": 2500.00
+}
+```
+
+> Obs.: o nome `"Celular"` é rejeitado pela API (retorna `"Dado inválido!"`).
+
+### Atualizar produto — `PUT /produtos.php`
+
+```json
+{
+  "id": 1,
+  "nome": "Notebook Gamer",
+  "preco": 3200.00
+}
+```
+
+### Excluir produto — `DELETE /produtos.php`
+
+```json
+{
+  "id": 1
+}
+```
+
+## Exemplos com `curl`
+
+```bash
+# Listar
+curl http://localhost:8000/produtos.php
+
+# Cadastrar
+curl -X POST http://localhost:8000/produtos.php -d '{"nome":"Notebook","preco":2500.00}'
+
+# Atualizar
+curl -X PUT http://localhost:8000/produtos.php -d '{"id":1,"nome":"Notebook","preco":3200.00}'
+
+# Excluir
+curl -X DELETE http://localhost:8000/produtos.php -d '{"id":1}'
+```

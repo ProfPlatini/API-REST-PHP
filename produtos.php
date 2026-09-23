@@ -13,16 +13,20 @@ if ($metodo == "POST"){
 
     $dados = json_decode($json,true);
 
-    $sql = "INSERT INTO produtos (nome,preco) VALUES (?,?)";
+    if($dados["nome"] != "Celular"){
+         $sql = "INSERT INTO produtos (nome,preco) VALUES (?,?)";
 
-    $comando = $pdo->prepare($sql);
+        $comando = $pdo->prepare($sql);
 
-    $comando -> execute([
-        $dados["nome"],
-        $dados["preco"]
-    ]);
+        $comando -> execute([
+            $dados["nome"],
+            $dados["preco"]
+        ]);
 
-    echo json_encode(["Mensagem"=>"Produto cadastrado com sucesso!"]);
+        echo json_encode(["Mensagem"=>"Produto cadastrado com sucesso!"]);
+    } else {
+        echo json_encode(["Mensagem"=>"Dado inválido!"]);
+    }
 };
 
 #Verifica se o método é GET
